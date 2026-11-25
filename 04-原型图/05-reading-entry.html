@@ -1,0 +1,214 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<title>移动抄表 · 公共机构能耗抄表与节能分析系统</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--p:#0F4C5C;--pd:#0B3A46;--s:#2A7F86;--a:#315F66;--bg:#F3F8F8;--sf:#fff;
+--bd:#DCE7E8;--tx:#16323A;--tx2:#5C7379;--ok:#247451;--wn:#A66A1E;--dg:#B02A37;
+--r:8px;--rb:6px;
+}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+background:var(--bg);color:var(--tx);font-size:13px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.num{font-variant-numeric:tabular-nums}
+a{color:var(--a);text-decoration:none}
+.layout{display:flex;min-height:100vh}
+.side{width:220px;background:var(--pd);color:#CFE3E5;flex:0 0 220px;display:flex;flex-direction:column}
+.brand{height:56px;display:flex;align-items:center;gap:9px;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+.brand .logo{width:24px;height:24px;border-radius:5px;background:linear-gradient(135deg,#2A7F86,#7FB3B7);
+display:flex;align-items:center;justify-content:center;color:#062B33;font-weight:600;font-size:12px}
+.brand b{color:#fff;font-size:14px;font-weight:600;letter-spacing:.2px}
+.dept{margin:12px 14px 4px;padding:8px 10px;border-radius:6px;background:rgba(255,255,255,.06);
+font-size:12px;color:#A9C6C9;display:flex;justify-content:space-between}
+.menu{padding:6px 0;flex:1}
+.mg{font-size:11px;color:#6E9196;padding:12px 18px 4px;letter-spacing:1px}
+.mi{display:flex;align-items:center;gap:10px;height:38px;margin:2px 10px;padding:0 10px;border-radius:6px;
+color:#C6DCDE;font-size:13px;cursor:pointer;position:relative}
+.mi svg{width:17px;height:17px;flex:0 0 17px;opacity:.85}
+.mi:hover{background:rgba(255,255,255,.07);color:#fff}
+.mi.on{background:#14606F;color:#fff;font-weight:500}
+.mi.on:before{content:"";position:absolute;left:-10px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:#7FB3B7}
+.mi .dot{margin-left:auto;background:var(--dg);color:#fff;font-size:10px;border-radius:9px;padding:1px 6px}
+.side-foot{padding:12px 18px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:#6E9196}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{height:56px;background:#fff;border-bottom:1px solid var(--bd);display:flex;align-items:center;
+padding:0 24px;gap:16px;position:sticky;top:0;z-index:20}
+.crumb{color:var(--tx2);font-size:13px}
+.crumb b{color:var(--tx);font-weight:500}
+.top-r{margin-left:auto;display:flex;align-items:center;gap:14px}
+.scope{font-size:12px;color:var(--a);background:#E7F2F3;border:1px solid #CBE1E3;border-radius:99px;padding:3px 10px}
+.icobtn{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+color:var(--tx2);position:relative;cursor:pointer}
+.icobtn:hover{background:#F0F7F7}
+.icobtn svg{width:18px;height:18px}
+.icobtn .badge{position:absolute;top:4px;right:4px;width:7px;height:7px;background:var(--dg);border-radius:50%;border:1.5px solid #fff}
+.who{display:flex;align-items:center;gap:8px;padding-left:12px;border-left:1px solid var(--bd)}
+.ava{width:29px;height:29px;border-radius:50%;background:#D8E9EA;color:#0F4C5C;display:flex;
+align-items:center;justify-content:center;font-size:12px;font-weight:600}
+.who .nm{font-size:13px;font-weight:500}
+.who .rl{font-size:11px;color:var(--tx2)}
+.body{padding:24px;flex:1}
+.h1{font-size:20px;font-weight:600;letter-spacing:.2px}
+.sub{color:var(--tx2);font-size:12px;margin-top:2px}
+.row{display:flex;align-items:center;gap:12px}
+.card{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:16px}
+.card-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.card-h h3{font-size:15px;font-weight:500}
+.card-h .more{font-size:12px;color:var(--a)}
+.btn{height:32px;padding:0 14px;border-radius:var(--rb);border:1px solid transparent;font-size:13px;
+display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:#fff;color:var(--p);font-family:inherit}
+.btn svg{width:15px;height:15px}
+.btn.p{background:var(--p);color:#fff}
+.btn.p:hover{background:var(--pd)}
+.btn.s{border-color:#C6D9DA}
+.btn.s:hover{background:#EAF3F3}
+.btn.d{border-color:#E3B4B8;color:var(--dg)}
+.btn.t{border-color:transparent;color:var(--a);padding:0 6px}
+.btn.sm{height:26px;padding:0 8px;font-size:12px}
+.filters{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:14px 16px;margin-bottom:14px;
+display:flex;flex-wrap:wrap;gap:12px 16px;align-items:flex-end}
+.fi{display:flex;flex-direction:column;gap:6px}
+.fi label{font-size:12px;color:var(--tx2)}
+.inp{height:32px;border:1px solid #C6D9DA;border-radius:var(--rb);padding:0 10px;font-size:13px;
+background:#fff;color:var(--tx);min-width:150px;display:flex;align-items:center;font-family:inherit}
+.inp.sel{width:190px;justify-content:space-between;color:var(--tx)}
+.inp.sel:after{content:"";width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;
+border-top:5px solid #7A9299}
+.inp.ph{color:#9AAFB4}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#F5FAFA;color:var(--tx2);font-size:12px;font-weight:500;text-align:left;height:44px;
+padding:0 12px;white-space:nowrap;border-bottom:1px solid var(--bd)}
+td{height:44px;padding:0 12px;border-bottom:1px solid #EDF4F4;white-space:nowrap}
+tr:hover td{background:#F7FBFB}
+td.r,th.r{text-align:right}
+.tb-wrap{background:#fff;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
+.scroll{overflow-x:auto}
+.tag{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:4px;font-size:12px}
+.tag:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.75}
+.t-gr{background:#EEF2F3;color:#4B6167}
+.t-wa{background:#FBF1E2;color:var(--wn)}
+.t-dg{background:#FBEAEC;color:var(--dg)}
+.t-ok{background:#E7F2EC;color:var(--ok)}
+.t-in{background:#E8F1F3;color:var(--a)}
+.pager{display:flex;align-items:center;gap:8px;padding:12px 14px;justify-content:flex-end;color:var(--tx2);font-size:12px}
+.pg{width:28px;height:28px;border:1px solid var(--bd);border-radius:5px;display:flex;align-items:center;
+justify-content:center;background:#fff;color:var(--tx);font-size:12px}
+.pg.on{background:var(--p);color:#fff;border-color:var(--p)}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:13px 14px}
+.kpi .l{font-size:12px;color:var(--tx2);display:flex;align-items:center;gap:5px}
+.kpi .v{font-size:24px;font-weight:600;color:var(--p);margin-top:4px;line-height:1.25}
+.kpi .v small{font-size:12px;font-weight:400;color:var(--tx2);margin-left:3px}
+.kpi .d{font-size:11px;margin-top:2px;color:var(--tx2)}
+.up{color:var(--dg)}.down{color:var(--ok)}
+.grid{display:grid;gap:12px}
+.chart-body{height:170px;position:relative}
+.legend{display:flex;gap:12px;font-size:11px;color:var(--tx2);flex-wrap:wrap}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
+.map{display:flex;gap:8px;align-items:flex-end;height:100%;padding-top:8px}
+.bar-g{display:flex;align-items:flex-end;gap:3px;flex:1;height:100%}
+.bar-g .b{flex:1;background:#BFD9DB;border-radius:2px 2px 0 0;position:relative}
+.bar-g .b.hi{background:var(--s)}
+.prog{height:7px;border-radius:4px;background:#E9F1F1;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--s);border-radius:4px}
+.prog.w i{background:var(--wn)}.prog.d i{background:var(--dg)}
+.drawer{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:18px}
+.tl{position:relative;padding-left:20px}
+.tl:before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--bd)}
+.tl-i{position:relative;padding-bottom:16px}
+.tl-i:before{content:"";position:absolute;left:-19px;top:5px;width:9px;height:9px;border-radius:50%;
+background:#fff;border:2px solid var(--s)}
+.tl-i.ok:before{border-color:var(--ok)}
+.tl-i.dg:before{border-color:var(--dg)}
+.tl-i .tt{font-size:11px;color:var(--tx2)}
+.tl-i .tx{font-size:13px;margin-top:2px}
+.kv{display:grid;grid-template-columns:100px 1fr;gap:8px 12px;font-size:13px}
+.kv dt{color:var(--tx2)}
+.kv dd{color:var(--tx)}
+.alert{display:flex;gap:10px;padding:12px 14px;border-radius:var(--r);background:#FBF1E2;
+border:1px solid #EFDCC0;color:#7A4F14;font-size:12.5px;line-height:1.6}
+.alert.dg{background:#FBEAEC;border-color:#EDC9CD;color:#8A2029}
+.alert.ok{background:#E7F2EC;border-color:#C9E2D5;color:#1B5A3E}
+.mono{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12px}
+/* 移动端原型 */
+.phone{width:390px;margin:0 auto;background:#fff;border-radius:26px;border:8px solid #123B45;
+box-shadow:0 10px 30px rgba(15,76,92,.18);overflow:hidden}
+.phone .ph-top{background:var(--p);color:#fff;padding:14px 16px 12px}
+.phone .ph-body{padding:14px;background:#F3F8F8;min-height:600px}
+.tcard{background:#fff;border:1px solid var(--bd);border-radius:8px;padding:12px;margin-bottom:10px}
+.tcard .r1{display:flex;justify-content:space-between;align-items:center}
+.btnblock{display:block;width:100%;height:44px;border-radius:8px;background:var(--p);color:#fff;
+display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:10px}
+.login{display:flex;min-height:100vh}
+.lg-l{width:54%;background:linear-gradient(150deg,#0B3A46 0%,#0F4C5C 55%,#1C6572 100%);
+color:#fff;padding:56px 60px;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.lg-l h1{font-size:30px;font-weight:600;letter-spacing:.5px;margin-top:auto;line-height:1.4}
+.lg-l p{color:#B7D3D6;margin-top:12px;font-size:13.5px;max-width:440px;line-height:1.9}
+.lg-tag{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.09);
+border:1px solid rgba(255,255,255,.14);border-radius:99px;padding:5px 12px;font-size:12px;color:#D6E8EA}
+.lg-stat{display:flex;gap:36px;margin-top:34px;padding-top:22px;border-top:1px solid rgba(255,255,255,.14)}
+.lg-stat .v{font-size:22px;font-weight:600}
+.lg-stat .l{font-size:11.5px;color:#9FBDC1;margin-top:2px}
+.lg-r{flex:1;display:flex;align-items:center;justify-content:center;background:#fff}
+.lg-form{width:360px}
+.lg-form h2{font-size:22px;font-weight:600}
+.lg-form .hint{color:var(--tx2);font-size:12.5px;margin-top:6px;margin-bottom:26px}
+.fld{margin-bottom:16px}
+.fld label{display:block;font-size:12.5px;color:var(--tx2);margin-bottom:6px}
+.fld .inp{width:100%;height:40px}
+.lg-btn{width:100%;height:42px;border-radius:6px;background:var(--p);color:#fff;border:0;font-size:14px;
+font-family:inherit;cursor:pointer;margin-top:6px}
+.lg-btn:hover{background:var(--pd)}
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px}
+.role-btn{border:1px solid var(--bd);border-radius:6px;padding:8px 10px;font-size:12px;color:var(--tx2);cursor:pointer}
+.role-btn.on{border-color:var(--s);background:#EAF3F3;color:var(--p);font-weight:500}
+.foot-note{color:#9AAFB4;font-size:11.5px;text-align:center;margin-top:18px}
+</style></head><body
+style="background:#DDEBEC;padding:28px 0">
+<div style="text-align:center;margin-bottom:16px;color:#164A55;font-size:13px">
+  抄表员移动作业端 · 390×844 原型（现场录入，支持拍照上传）</div>
+<div class="phone">
+  <div class="ph-top">
+    <div class="row" style="justify-content:space-between;font-size:12px;opacity:.85">
+      <span>9:41</span><span>行政中心A座 · 已定位</span></div>
+    <div style="font-size:17px;font-weight:600;margin-top:8px">抄表录入</div>
+    <div style="font-size:12px;opacity:.85;margin-top:2px">TK-202610-0412 · 截止 10-28</div>
+  </div>
+  <div class="ph-body">
+    <div class="tcard">
+      <div class="r1"><b class="mono" style="font-size:13px">EM-D-0101</b><span class="tag t-wa">待执行</span></div>
+      <div style="font-size:12px;color:#5C7379;margin-top:6px">B1 配电房 3#柜 · 电 · 倍率 80</div>
+      <div style="display:flex;gap:8px;margin-top:10px;font-size:11.5px;color:#5C7379">
+        <span style="flex:1;background:#F3F8F8;border-radius:5px;padding:6px 8px">上期读数<br>
+          <b class="num" style="font-size:14px;color:#16323A">1,284,320</b></span>
+        <span style="flex:1;background:#F3F8F8;border-radius:5px;padding:6px 8px">近6期均值<br>
+          <b class="num" style="font-size:14px;color:#16323A">16,420</b></span>
+      </div>
+    </div>
+    <div class="tcard">
+      <div style="font-size:12px;color:#5C7379;margin-bottom:6px">本期读数 <span style="color:#B02A37">*</span></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="inp num" style="flex:1;height:42px;font-size:18px;font-weight:600">1,301,476</div>
+        <span style="font-size:12px;color:#5C7379">kWh</span></div>
+      <div class="alert" style="margin-top:10px;padding:8px 10px">
+        本期用量 17,156 kWh（×80 倍率），较近6期均值 +4.5%，在正常波动范围内</div>
+      <div style="font-size:12px;color:#5C7379;margin:12px 0 6px">抄表时间</div>
+      <div class="inp" style="height:40px">2026-10-28 09:46</div>
+      <div style="font-size:12px;color:#5C7379;margin:12px 0 6px">表计状态</div>
+      <div class="inp sel" style="width:100%;height:40px">正常</div>
+      <div style="font-size:12px;color:#5C7379;margin:12px 0 6px">表盘照片 <span style="color:#B02A37">*</span></div>
+      <div style="display:flex;gap:8px">
+        <div style="width:76px;height:76px;border-radius:6px;background:#E8F1F3;display:flex;align-items:center;
+          justify-content:center;color:#2A7F86;border:1px solid #CBE1E3"><svg class=""><use href="icons.svg#i-camera"/></svg></div>
+        <div style="width:76px;height:76px;border-radius:6px;border:1px dashed #C6D9DA;display:flex;
+          align-items:center;justify-content:center;color:#8FA6AB;font-size:22px">+</div>
+      </div>
+      <div style="font-size:12px;color:#5C7379;margin:12px 0 6px">备注</div>
+      <div class="inp" style="height:56px;align-items:flex-start;padding-top:8px;color:#9AAFB4">选填，异常情况请说明</div>
+      <div class="btnblock">提交复核</div>
+      <div style="text-align:center;font-size:12px;color:#315F66;margin-top:10px">暂存草稿</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <div class="btn s" style="flex:1;height:40px;justify-content:center">上一条</div>
+      <div class="btn s" style="flex:1;height:40px;justify-content:center">下一条</div>
+    </div>
+  </div>
+</div></body></html>
